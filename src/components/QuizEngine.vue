@@ -42,28 +42,12 @@
 </template>
 
 <script>
+    import * as axios from 'axios';
     export default {
         name: 'quizEngine',
         data() {
             return {
-                questions: [{
-                    question_description: "what is 3 + 4",
-                    correct_answer: 3,
-                    wrong_answer_response: "it is 7",
-                    answer_option_1: "3",
-                    answer_option_2: "2",
-                    answer_option_3: "36",
-                    answer_option_4: "7",
-                },
-                {
-                    question_description: "what is 6 + 2",
-                    correct_answer: 3,
-                    wrong_answer_response: "it is 8",
-                    answer_option_1: "3",
-                    answer_option_2: "2",
-                    answer_option_3: "36",
-                    answer_option_4: "8",
-                }],
+                questions: undefined,
                 currentIndex: 0,
                 currentQuestion: undefined,
                 showCheckButton: false,
@@ -76,8 +60,10 @@
                 results: {}
             }
         },
-        created() {
-            this.currentQuestion = this.questions[this.currentIndex];  
+        async created() {
+            // this.questions = this.getQuestionsFromAPI();
+            this.questions = this.getMockQuestions();
+            this.currentQuestion = this.questions[this.currentIndex];
         },
         methods: {
             checkAnswer() {
@@ -88,6 +74,31 @@
                 } else {
                     this.showNextButton = true;
                 }
+            },
+            async getQuestionsFromAPI() {
+                const api_url = 'http://localhost:8080/api/questions/'
+                const response = await axios.get(api_url);
+                this.questions = response.data;
+            },
+            getMockQuestions() {
+                return [{
+                    question_description: "Which one of these is NOT considered inventory?",
+                    correct_answer: 3,
+                    wrong_answer_response: "This is considered inventory.",
+                    answer_option_1: "Liquor Bottles",
+                    answer_option_2: "Fermentables/non-alcoholic material",
+                    answer_option_3: "Beer, Wine, Cider",
+                    answer_option_4: "Scratch and sniff stickers",
+                },
+                {
+                    question_description: "What is a Bulk Distilled Spirit?",
+                    correct_answer: 1,
+                    wrong_answer_response: "A distilled spirits in a container having a capacity in excess of one wine gallon",
+                    answer_option_1: "A distilled spirits in a package having a capacity in excess of 10 wine gallons",
+                    answer_option_2: "A distilled spirits in a container having a capacity in excess of one wine gallon",
+                    answer_option_3: "A package of distilled containers",
+                    answer_option_4: "All of your ghosts friends in the attic.",
+                }]
             },
             selectAnswer(index) {
                 this.isCorrect = index === this.currentQuestion.correct_answer;
