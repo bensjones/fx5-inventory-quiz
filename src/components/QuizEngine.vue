@@ -61,9 +61,7 @@
             }
         },
         async created() {
-            // this.questions = this.getQuestionsFromAPI();
-            this.questions = this.getMockQuestions();
-            this.currentQuestion = this.questions[this.currentIndex];
+            await this.getQuestionsFromAPI();
         },
         methods: {
             checkAnswer() {
@@ -76,9 +74,10 @@
                 }
             },
             async getQuestionsFromAPI() {
-                const api_url = 'http://localhost:8080/api/questions/'
+                const api_url = 'http://localhost:8001/api/questions/'
                 const response = await axios.get(api_url);
                 this.questions = response.data;
+                this.currentQuestion = this.questions[this.currentIndex];
             },
             getMockQuestions() {
                 return [{
